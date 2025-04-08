@@ -1,14 +1,15 @@
 import express from 'express';
-import routes from './routes/index.js'; // We'll create this next
+import dotenv from 'dotenv';
+import routes from './routes/index.js';
+
+dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 5000;
 
-app.use(express.json());
-
-// Mount the routes
+// Mount the API routes
 app.use('/', routes);
 
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.log(`Server running on port ${port}`);
 });
