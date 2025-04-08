@@ -1,5 +1,5 @@
-import dbClient from '../utils/db.mjs';
-import redisClient from '../utils/redis.mjs';
+import dbClient from '../utils/db';
+import redisClient from '../utils/redis';
 
 class AppController {
   // GET /status returns { "redis": true, "db": true } if both are alive
