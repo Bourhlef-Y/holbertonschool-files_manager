@@ -1,6 +1,6 @@
 import pkg from 'mongodb';
 
-const { MongoClient } = pkg;
+const { MongoClient, ObjectId } = pkg;
 
 class DBClient {
   constructor() {
@@ -33,4 +33,5 @@ class DBClient {
 }
 
 const dbClient = new DBClient();
+export { ObjectId };
 export default dbClient;
