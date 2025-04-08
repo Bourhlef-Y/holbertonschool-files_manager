@@ -6,7 +6,7 @@ class AppController {
   static async getStatus(req, res) {
     res.status(200).json({
       redis: redisClient.isAlive(),
-      db: dbClient.isAlive()
+      db: dbClient.isAlive(),
     });
   }
 
@@ -17,7 +17,7 @@ class AppController {
       const files = await dbClient.nbFiles();
       res.status(200).json({
         users,
-        files
+        files,
       });
     } catch (error) {
       res.status(500).json({ error: 'Error retrieving stats' });
