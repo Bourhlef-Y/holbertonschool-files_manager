@@ -1,7 +1,7 @@
 import crypto from 'crypto';
+import { ObjectId } from 'mongodb';
 import dbClient from '../utils/db';
 import redisClient from '../utils/redis';
-import { ObjectId } from 'mongodb';
 
 class UsersController {
   static async postNew(req, res) {
@@ -21,7 +21,7 @@ class UsersController {
 
     return res.status(201).json({ id: userId.toString(), email });
   }
-  
+
   static async getMe(req, res) {
     const token = req.headers['x-token'];
     const key = `auth_${token}`;
