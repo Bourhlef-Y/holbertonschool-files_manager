@@ -162,8 +162,6 @@ class FilesController {
         ])
         .toArray();
 
-      console.log('Files fetched:', files.length);
-
       const result = files.map((file) => ({
         id: file._id.toString(),
         userId: file.userId.toString(),
