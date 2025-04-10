@@ -129,7 +129,7 @@ class FilesController {
 
     // Use default values
     const parentId = req.query.parentId || '0';
-    const pageParam = parseInt(req.query.page);
+    const pageParam = parseInt(req.query.page, 10);
     const page = Number.isNaN(pageParam) || pageParam < 0 ? 0 : pageParam;
 
     let filter;
@@ -151,14 +151,18 @@ class FilesController {
     }
 
     try {
-      const files = await dbClient.db
-        .collection('files')
-        .aggregate([
-          { $match: filter },
-          { $skip: page * 20 },
-          { $limit: 20 },
-        ])
-        .toArray();
+        console.log('Fetching files for user:', userId, 'page:', page);
+
+        const files = await dbClient.db
+          .collection('files')
+          .aggregate([
+            { $match: filter },
+            { $skip: page * 20 },
+            { $limit: 20 },
+          ])
+          .toArray();
+
+        console.log('Files fetched:', files.length);
 
       const result = files.map((file) => ({
         id: file._id.toString(),
