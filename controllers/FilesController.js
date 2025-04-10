@@ -129,7 +129,8 @@ class FilesController {
 
     // Use default values
     const parentId = req.query.parentId || '0';
-    const page = Math.max(0, parseInt(req.query.page) || 0);
+    const pageParam = parseInt(req.query.page);
+    const page = Number.isNaN(pageParam) || pageParam < 0 ? 0 : pageParam;
 
     let filter;
     if (parentId === '0') {
