@@ -151,18 +151,18 @@ class FilesController {
     }
 
     try {
-        console.log('Fetching files for user:', userId, 'page:', page);
+      console.log('Fetching files for user:', userId, 'page:', page);
 
-        const files = await dbClient.db
-          .collection('files')
-          .aggregate([
-            { $match: filter },
-            { $skip: page * 20 },
-            { $limit: 20 },
-          ])
-          .toArray();
+      const files = await dbClient.db
+        .collection('files')
+        .aggregate([
+          { $match: filter },
+          { $skip: page * 20 },
+          { $limit: 20 },
+        ])
+        .toArray();
 
-        console.log('Files fetched:', files.length);
+      console.log('Files fetched:', files.length);
 
       const result = files.map((file) => ({
         id: file._id.toString(),
