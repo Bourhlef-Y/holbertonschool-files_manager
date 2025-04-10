@@ -119,6 +119,42 @@ class FilesController {
       parentId: file.parentId === 0 ? 0 : file.parentId.toString(),
     });
   }
+
+  static async getIndex(req, res) {
+    const token = req.headers['x-token'];
+    if (!token) return res.status(401).json({ error: 'Unauthorized' });
+
+    const userId = await redisClient.get(`auth_${token}`);
+    if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+
+    const parentId = req.query.parentId || '0';
+    const page = parseInt(req.query.page, 10) || 0;
+
+    const filter = {
+      userId: new ObjectId(userId),
+      parentId: parentId === '0' ? 0 : new ObjectId(parentId),
+    };
+
+    const files = await dbClient.db
+      .collection('files')
+      .aggregate([
+        { $match: filter },
+        { $skip: page * 20 },
+        { $limit: 20 },
+      ])
+      .toArray();
+
+    const result = files.map((file) => ({
+      id: file._id.toString(),
+      userId: file.userId.toString(),
+      name: file.name,
+      type: file.type,
+      isPublic: file.isPublic,
+      parentId: file.parentId === 0 ? 0 : file.parentId.toString(),
+    }));
+
+    return res.status(200).json(result);
+  }  
 }
 
 export default FilesController;
