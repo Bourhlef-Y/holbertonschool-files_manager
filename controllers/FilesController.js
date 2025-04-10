@@ -154,7 +154,7 @@ class FilesController {
     }));
 
     return res.status(200).json(result);
-  }  
+  }
 }
 
 export default FilesController;
