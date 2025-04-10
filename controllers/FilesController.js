@@ -129,7 +129,7 @@ class FilesController {
 
     // Use default values
     const parentId = req.query.parentId || '0';
-    const page = parseInt(req.query.page, 10) || 0;
+    const page = Math.max(0, parseInt(req.query.page) || 0);
 
     let filter;
     if (parentId === '0') {
