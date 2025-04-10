@@ -127,33 +127,52 @@ class FilesController {
     const userId = await redisClient.get(`auth_${token}`);
     if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
+    // Use default values
     const parentId = req.query.parentId || '0';
     const page = parseInt(req.query.page, 10) || 0;
 
-    const filter = {
-      userId: new ObjectId(userId),
-      parentId: parentId === '0' ? 0 : new ObjectId(parentId),
-    };
+    let filter;
+    if (parentId === '0') {
+      filter = {
+        userId: new ObjectId(userId),
+        parentId: 0,
+      };
+    } else {
+      try {
+        filter = {
+          userId: new ObjectId(userId),
+          parentId: new ObjectId(parentId),
+        };
+      } catch (err) {
+        // If parentId is invalid format, return empty list
+        return res.status(200).json([]);
+      }
+    }
 
-    const files = await dbClient.db
-      .collection('files')
-      .aggregate([
-        { $match: filter },
-        { $skip: page * 20 },
-        { $limit: 20 },
-      ])
-      .toArray();
+    try {
+      const files = await dbClient.db
+        .collection('files')
+        .aggregate([
+          { $match: filter },
+          { $skip: page * 20 },
+          { $limit: 20 },
+        ])
+        .toArray();
 
-    const result = files.map((file) => ({
-      id: file._id.toString(),
-      userId: file.userId.toString(),
-      name: file.name,
-      type: file.type,
-      isPublic: file.isPublic,
-      parentId: file.parentId === 0 ? 0 : file.parentId.toString(),
-    }));
+      const result = files.map((file) => ({
+        id: file._id.toString(),
+        userId: file.userId.toString(),
+        name: file.name,
+        type: file.type,
+        isPublic: file.isPublic,
+        parentId: file.parentId === 0 ? 0 : file.parentId.toString(),
+      }));
 
-    return res.status(200).json(result);
+      return res.status(200).json(result);
+    } catch (err) {
+      console.error('Error in GET /files:', err);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
   }
 }
 
