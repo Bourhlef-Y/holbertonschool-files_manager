@@ -137,7 +137,7 @@ class FilesController {
     if (parentId === '0') {
       filter = {
         userId: new ObjectId(userId),
-        parentId: { $in: [0, '0'] }
+        parentId: { $in: [0, '0'] },
       };
     } else {
       try {
